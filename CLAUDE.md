@@ -16,6 +16,33 @@ work with Elduin live in `~/.claude/CLAUDE.md`.
     primary version   1.21.11               (the one he plays)
     java              21 for 1.21.x, 25 for 26.x — Gradle picks this per version
 
+## How it works
+
+- `MuddyPigEntity` is its own `Animal` (not a `Pig` subclass), with pig goals,
+  pig food and pig sounds. Two synced flags: `dry` and `wallowing`.
+- Muddy pigs dry out after 1.5–3 minutes (paused in water, rain, or while
+  standing in mud). A dry pig's `FindMudGoal` walks it to a `minecraft:mud`
+  block; standing in mud starts a 60-tick roll (`WallowGoal` holds it still).
+  At the end it is muddy again and the flower opens.
+- `AnimalMixin` hooks `Animal.aiStep`, because `Pig` has no tick method of its
+  own: a normal pig standing in mud for a second converts into a Muddy Pig and
+  rolls. Saddled or ridden pigs are left alone.
+- The renderer rolls the whole pig around its middle (`MuddyPigRenderer.rollAngle`).
+  The model is the vanilla pig shape plus two crossed flower "cards" on the
+  head; `flower` and `bud` toggle visibility.
+- Babies use the old scaled-head pig shape on both versions, so the one
+  64x64 texture serves both (26.2's own baby pig has a different model).
+- Every texture and the icon are drawn by `tools/textures.py` and
+  `tools/icon.py` — no Mojang art. Edit those and re-run them; don't hand-edit
+  the PNGs.
+- Version differences live in `Compat.java` (26.2 pig sound variants) plus
+  small Stonecutter branches in `ModEntities` (`spawnRestriction` →
+  `spawnPlacement`), `MuddyPigClient` (`EntityModelLayerRegistry` →
+  `ModelLayerRegistry`), `MuddyPigRenderer` (`CameraRenderState` package) and
+  `FabricEventSubscriber` (`ItemGroupEvents` → `CreativeModeTabEvents`).
+- The loot table uses 1.21.11's key names (`"flags"`, `"equipment"`); 26.2
+  reads those as `minecraft:flags` / `minecraft:equipment`, so one file works.
+
 The mod id is baked into save files. Once a world has been played with this mod,
 **changing the mod id breaks that world.** Rename the display name freely;
 never rename the mod id.
