@@ -2,21 +2,25 @@ package com.elduin.muddy_pig.platform.fabric;
 
 //? fabric {
 
-import com.elduin.muddy_pig.event.ExampleEventHandler; // sample_content
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents; // sample_content
-import net.minecraft.server.level.ServerPlayer; // sample_content
+import com.elduin.muddy_pig.entity.ModEntities;
+import net.minecraft.world.item.CreativeModeTabs;
+//? if >=26 {
+/*import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+*///? } else {
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+//? }
 
 public class FabricEventSubscriber {
 
 	public static void registerEvents() {
-		//? != 1.19.2 {
-		// sample_content
-		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damageTaken, blocked) -> { // sample_content
-			if (entity instanceof ServerPlayer && damageTaken > 0) { // sample_content
-				ExampleEventHandler.onPlayerHurt((ServerPlayer) entity); // sample_content
-			} // sample_content
-		}); // sample_content
-		//?}
+		// Fabric API renamed "item groups" to "creative mode tabs" in 26.
+		//? if >=26 {
+		/*CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS)
+				.register(output -> output.accept(ModEntities.MUDDY_PIG_SPAWN_EGG));
+		*///? } else {
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS)
+				.register(entries -> entries.accept(ModEntities.MUDDY_PIG_SPAWN_EGG));
+		//? }
 	}
 }
 //?}

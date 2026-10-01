@@ -1,5 +1,7 @@
 package com.elduin.muddy_pig;
 
+import com.elduin.muddy_pig.client.MuddyPigClient;
+import com.elduin.muddy_pig.entity.ModEntities;
 import com.elduin.muddy_pig.platform.Platform;
 
 import net.minecraft.resources.Identifier;
@@ -21,11 +23,13 @@ public class MuddyPig {
 	public static void onInitialize() {
 		LOGGER.info("Initializing {} on {}", MOD_ID, MuddyPig.xplat().loader());
 		LOGGER.debug("{}: { version: {}; friendly_name: {} }", MOD_ID, MOD_VERSION, MOD_FRIENDLY_NAME);
+		ModEntities.register();
 	}
 
 	public static void onInitializeClient() {
 		LOGGER.info("Initializing {} Client on {}", MOD_ID, MuddyPig.xplat().loader());
 		LOGGER.debug("{}: { version: {}; friendly_name: {} }", MOD_ID, MOD_VERSION, MOD_FRIENDLY_NAME);
+		MuddyPigClient.register();
 	}
 
 	static Platform xplat() {
@@ -36,7 +40,7 @@ public class MuddyPig {
 		return new FabricPlatform();
 	}
 
-	private static Identifier id(String path) {
+	public static Identifier id(String path) {
 		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
 
